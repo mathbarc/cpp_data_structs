@@ -36,7 +36,7 @@ template <typename Type> class DoubleLinkedList
 
         bool operator==(iterator other)
         {
-            return this->current->value == other.current->value;
+            return this->current == other.current;
         }
 
         bool operator!=(iterator other)
@@ -61,7 +61,7 @@ template <typename Type> class DoubleLinkedList
 
     iterator end()
     {
-        return iterator(this->tail);
+        return iterator(nullptr);
     }
 
     void insert(const Type &value)

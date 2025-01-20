@@ -1,5 +1,14 @@
 #include "double_linked_list.hpp"
 #include <cassert>
+#include <iostream>
+
+template <typename List> void print(List &list)
+{
+    for(auto v : list)
+    {
+        std::cout << v << std::endl;
+    }
+}
 
 int main(int argc, char **argv)
 {
@@ -18,11 +27,22 @@ int main(int argc, char **argv)
     {
         assert(i == v);
         v += 10;
+        std::cout << i << std::endl;
     }
 
     list.remove();
-
     assert(list.size() == 3);
+
+    std::cout << std::endl;
+    print(list);
+    std::cout << std::endl;
+
+    for(int &i : list)
+    {
+        i += 10;
+    }
+
+    print(list);
 
     return 0;
 }
