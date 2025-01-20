@@ -2,6 +2,14 @@
 #include <cassert>
 #include <iostream>
 
+template <typename List> void print(List &list)
+{
+    for(auto v : list)
+    {
+        std::cout << v << std::endl;
+    }
+}
+
 int main(int argc, char **argv)
 {
     LinkedList<int> list;
@@ -15,10 +23,15 @@ int main(int argc, char **argv)
     list.insert(v);
 
     assert(list.size() == 5);
-    for(auto v : list)
+
+    print(list);
+
+    for(int &v : list)
     {
-        std::cout << v << std::endl;
+        v += 1;
     }
+
+    print(list);
 
     while(list.size())
     {

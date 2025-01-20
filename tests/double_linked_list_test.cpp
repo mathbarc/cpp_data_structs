@@ -3,6 +3,7 @@
 
 int main(int argc, char **argv)
 {
+
     DoubleLinkedList<int> list;
 
     list.insert(10);

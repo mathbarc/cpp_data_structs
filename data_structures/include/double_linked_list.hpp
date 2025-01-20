@@ -44,7 +44,7 @@ template <typename Type> class DoubleLinkedList
             return !(*this == other);
         }
 
-        Type operator*()
+        Type &operator*()
         {
             return this->current->value;
         }
