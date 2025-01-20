@@ -1,0 +1,15 @@
+
+include_directories(${DATA_STRUCTURES_INCLUDE_DIR})
+
+add_executable(linked_list_test ${CMAKE_CURRENT_SOURCE_DIR}/linked_list_test.cpp)
+target_link_libraries(linked_list_test data_structures)
+target_compile_options(linked_list_test PRIVATE -coverage)
+target_link_options(linked_list_test PRIVATE -coverage)
+add_test(NAME linked_list_test COMMAND linked_list_test)
+
+
+add_executable(double_linked_list_test ${CMAKE_CURRENT_SOURCE_DIR}/double_linked_list_test.cpp)
+target_link_libraries(double_linked_list_test data_structures)
+target_compile_options(double_linked_list_test PRIVATE -coverage)
+target_link_options(double_linked_list_test PRIVATE -coverage)
+add_test(NAME double_linked_list_test COMMAND double_linked_list_test)
