@@ -64,7 +64,7 @@ template <typename Type> class DoubleLinkedList
         return iterator(nullptr);
     }
 
-    void insert(const Type &value)
+    void insertOnHead(const Type &value)
     {
         Node *newNode = new Node{value, nullptr};
         if(this->head != nullptr)
@@ -79,7 +79,7 @@ template <typename Type> class DoubleLinkedList
         ++this->n_elements;
     }
 
-    Type remove()
+    Type removeFromTail()
     {
         if(this->head == nullptr)
             throw std::runtime_error("It is impossible to remove elements from empty list");
