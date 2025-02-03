@@ -15,10 +15,10 @@ int main(int argc, char **argv)
 
     DoubleLinkedList<int> list;
 
-    list.insert(10);
-    list.insert(20);
-    list.insert(30);
-    list.insert(40);
+    list.insertOnHead(10);
+    list.insertOnHead(20);
+    list.insertOnHead(30);
+    list.insertOnHead(40);
 
     assert(list.size() == 4);
 
@@ -30,7 +30,7 @@ int main(int argc, char **argv)
         std::cout << i << std::endl;
     }
 
-    list.remove();
+    list.removeFromTail();
     assert(list.size() == 3);
 
     std::cout << std::endl;

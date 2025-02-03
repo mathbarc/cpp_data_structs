@@ -13,14 +13,27 @@ template <typename Type> class Queue
     {
     }
 
-    void enqueue(const Type &value)
+    virtual void enqueue(const Type &value)
     {
-        this->list.insert(value);
+        this->list.insertOnHead(value);
     }
 
-    Type enqueue()
+    virtual Type dequeue()
     {
-        return this->list.remove();
+        return this->list.removeFromTail();
+    }
+
+    virtual const Type &front()
+    {
+        if(this->list.size())
+            return this->list.head->value;
+        else
+            throw std::runtime_error("Empty queue does not contain first element");
+    }
+
+    virtual size_t size()
+    {
+        return this->list.size();
     }
 };
 

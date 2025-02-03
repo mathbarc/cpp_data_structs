@@ -16,6 +16,8 @@ template <typename Type> class DoubleLinkedList
     Node *tail;
     size_t n_elements;
 
+    template <typename U> friend class Queue;
+
   public:
     class iterator
     {
