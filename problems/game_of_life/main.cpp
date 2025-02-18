@@ -1,8 +1,10 @@
+#include <iostream>
 #include <opencv2/core.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/core/mat.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <utility>
 #include <vector>
@@ -75,16 +77,55 @@ void calculateNewPopulation(const cv::Mat1b &board, std::vector<std::pair<int, i
     }
 }
 
+cv::Mat1b board(120, 160);
+bool dragging = false;
+
+void showBoard()
+{
+    cv::Mat1b resized;
+    cv::resize(board, resized, cv::Size(1920, 1080));
+    cv::imshow("board", resized * 255);
+}
+
+void changeBoardAtPosition(int x, int y)
+{
+    std::cout << x << ", " << y;
+    x = int(x * (board.cols / 1920.));
+    y = int(y * (board.rows / 1080.));
+    std::cout << " - " << x << ", " << y << std::endl;
+    board.at<uchar>(y, x) = !board.at<uchar>(y, x);
+}
+
+void mouseCallback(int event, int x, int y, int flags, void *userdata)
+{
+    if(event == cv::EVENT_LBUTTONDOWN)
+    {
+        changeBoardAtPosition(x, y);
+        dragging = true;
+    }
+    else if(event == cv::EVENT_LBUTTONUP)
+    {
+        dragging = false;
+    }
+    else if(event == cv::EVENT_MOUSEMOVE && dragging)
+    {
+        changeBoardAtPosition(x, y);
+    }
+    showBoard();
+}
+
 int main(int argc, char **argv)
 {
-    cv::Mat1b board(50, 50);
     cv::randu(board, 0, 2);
 
-    cv::namedWindow("board", cv::WINDOW_NORMAL);
+    cv::namedWindow("board", cv::WINDOW_KEEPRATIO);
+    cv::setMouseCallback("board", mouseCallback);
 
-    char key;
+    showBoard();
+    char key = cv::waitKey();
     std::vector<std::pair<int, int>> changes;
-    do
+
+    while(key != 27)
     {
         calculateNewPopulation(board, changes);
 
@@ -94,9 +135,14 @@ int main(int argc, char **argv)
         }
 
         changes.clear();
-        cv::imshow("board", board * 255);
+        cv::Mat1b resized;
+        cv::resize(board, resized, cv::Size(1920, 1080));
+
+        cv::imshow("board", resized * 255);
         key = cv::waitKey(100);
-    } while(key != 27);
+        if(key == 32)
+            key = cv::waitKey();
+    }
 
     return 0;
 }
