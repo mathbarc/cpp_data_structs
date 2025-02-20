@@ -89,10 +89,8 @@ void showBoard()
 
 void changeBoardAtPosition(int x, int y)
 {
-    std::cout << x << ", " << y;
     x = int(x * (board.cols / 1920.));
     y = int(y * (board.rows / 1080.));
-    std::cout << " - " << x << ", " << y << std::endl;
     board.at<uchar>(y, x) = !board.at<uchar>(y, x);
 }
 
