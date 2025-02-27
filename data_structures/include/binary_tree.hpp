@@ -1,6 +1,7 @@
 #ifndef BINARY_TREE_HPP
 #define BINARY_TREE_HPP
 
+#include "double_linked_list.hpp"
 #include "linked_list.hpp"
 #include <iostream>
 #include <stdexcept>
@@ -168,7 +169,30 @@ template <typename Type> class BinaryTree
         }
         std::cout << std::endl;
     }
-    size_t height();
+
+    size_t height()
+    {
+        if(this->root == nullptr)
+            return 0;
+        LinkedList<std::pair<Node *, size_t>> visited;
+        size_t highest_height = 0;
+
+        visited.insert(std::make_pair(this->root, 1));
+
+        while(visited.size())
+        {
+            std::pair<Node *, size_t> current = visited.remove();
+
+            if(highest_height < current.second)
+                highest_height = current.second;
+
+            if(current.first->left != nullptr)
+                visited.insert(std::make_pair(current.first->left, current.second + 1));
+            if(current.first->right != nullptr)
+                visited.insert(std::make_pair(current.first->right, current.second + 1));
+        }
+        return highest_height;
+    }
 
     void balance();
 };

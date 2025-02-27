@@ -9,6 +9,8 @@ int main(int argc, char **argv)
     data.insert(2);
     data.insert(20);
 
+    std::cout << "Height: " << data.height() << std::endl;
+
     data.inOrder();
     data.preOrder();
     data.postOrder();
