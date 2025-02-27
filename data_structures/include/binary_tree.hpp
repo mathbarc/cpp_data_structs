@@ -3,6 +3,7 @@
 
 #include "linked_list.hpp"
 #include <iostream>
+#include <stdexcept>
 #include <utility>
 
 template <typename Type> class BinaryTree
@@ -52,6 +53,57 @@ template <typename Type> class BinaryTree
         }
     }
 
+    void remove(Node *toDelete, Node *parent)
+    {
+        Node *y = toDelete;
+        if(toDelete->left != nullptr && toDelete->right != nullptr)
+        {
+            Node *py = y;
+            y = y->right;
+            while(y->left != nullptr)
+            {
+                py = y;
+                y = y->left;
+            }
+            if(y != toDelete)
+            {
+                toDelete->value = y->value;
+                toDelete = y;
+                parent = py;
+            }
+        }
+
+        if(parent != nullptr)
+        {
+            if(parent->left == toDelete)
+                parent->left = toDelete->left;
+            if(parent->right == toDelete)
+                parent->right = toDelete->right;
+        }
+        delete toDelete;
+    }
+
+    void remove(const Type &value)
+    {
+        Node *toDelete = this->root;
+        Node *parent = nullptr;
+        while(toDelete != nullptr)
+        {
+            if(value == toDelete->value)
+                break;
+            parent = toDelete;
+            if(value < toDelete->value)
+                toDelete = toDelete->left;
+            else if(value > toDelete->value)
+                toDelete = toDelete->right;
+        }
+
+        if(toDelete == nullptr)
+            throw std::runtime_error("Value not found on tree");
+
+        this->remove(toDelete, parent);
+    }
+
     void inOrder()
     {
         LinkedList<std::pair<Node *, bool>> visited;
@@ -76,8 +128,46 @@ template <typename Type> class BinaryTree
         std::cout << std::endl;
     }
 
-    void preOrder();
-    void postOrder();
+    void preOrder()
+    {
+        LinkedList<Node *> visited;
+
+        visited.insert(this->root);
+        while(visited.size())
+        {
+            Node *current = visited.remove();
+            std::cout << current->value << " ";
+            if(current->right != nullptr)
+                visited.insert(current->right);
+            if(current->left != nullptr)
+                visited.insert(current->left);
+        }
+        std::cout << std::endl;
+    }
+
+    void postOrder()
+    {
+        LinkedList<std::pair<Node *, bool>> visited;
+
+        visited.insert(std::make_pair(this->root, false));
+        while(visited.size())
+        {
+            std::pair<Node *, bool> current = visited.remove();
+            if(current.second)
+            {
+                std::cout << current.first->value << " ";
+            }
+            else
+            {
+                visited.insert(std::make_pair(current.first, true));
+                if(current.first->right != nullptr)
+                    visited.insert(std::make_pair(current.first->right, false));
+                if(current.first->left != nullptr)
+                    visited.insert(std::make_pair(current.first->left, false));
+            }
+        }
+        std::cout << std::endl;
+    }
     size_t height();
 
     void balance();
