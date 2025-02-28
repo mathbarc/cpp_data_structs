@@ -11,12 +11,12 @@ int main(int argc, char **argv)
 
     std::cout << "Height: " << data.height() << std::endl;
 
-    data.inOrder();
-    data.preOrder();
-    data.postOrder();
+    data.inOrderPrint();
+    data.preOrderPrint();
+    data.postOrderPrint();
 
     data.remove(10);
-    data.inOrder();
+    data.inOrderPrint();
 
     return 0;
 }

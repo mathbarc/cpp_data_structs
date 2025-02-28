@@ -6,6 +6,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <utility>
+#include <vector>
 
 template <typename Type> class BinaryTree
 {
@@ -21,6 +22,69 @@ template <typename Type> class BinaryTree
     };
 
     Node *root;
+
+    void inOrderRetrieve(std::vector<Node *> &nodeArray, Node *rootNode)
+    {
+        LinkedList<std::pair<Node *, bool>> visited;
+
+        visited.insert(std::make_pair(rootNode, false));
+        while(visited.size())
+        {
+            std::pair<Node *, bool> current = visited.remove();
+            if(current.second)
+            {
+                nodeArray.push_back(current.first);
+            }
+            else
+            {
+                if(current.first->right != nullptr)
+                    visited.insert(std::make_pair(current.first->right, false));
+                visited.insert(std::make_pair(current.first, true));
+                if(current.first->left != nullptr)
+                    visited.insert(std::make_pair(current.first->left, false));
+            }
+        }
+    }
+
+    void preOrderRetrieve(std::vector<Node *> &nodeArray, Node *rootNode)
+    {
+        LinkedList<Node *> visited;
+
+        visited.insert(rootNode);
+        Node *current;
+        while(visited.size())
+        {
+            current = visited.remove();
+            nodeArray.push_back(current);
+            if(current->right != nullptr)
+                visited.insert(current->right);
+            if(current->left != nullptr)
+                visited.insert(current->left);
+        }
+    }
+
+    void postOrderRetrieve(std::vector<Node *> &nodeArray, Node *rootNode)
+    {
+        LinkedList<std::pair<Node *, bool>> visited;
+
+        visited.insert(std::make_pair(rootNode, false));
+        while(visited.size())
+        {
+            std::pair<Node *, bool> current = visited.remove();
+            if(current.second)
+            {
+                nodeArray.push_back(current.first);
+            }
+            else
+            {
+                visited.insert(std::make_pair(current.first, true));
+                if(current.first->right != nullptr)
+                    visited.insert(std::make_pair(current.first->right, false));
+                if(current.first->left != nullptr)
+                    visited.insert(std::make_pair(current.first->left, false));
+            }
+        }
+    }
 
   public:
     BinaryTree() : root(nullptr)
@@ -105,68 +169,41 @@ template <typename Type> class BinaryTree
         this->remove(toDelete, parent);
     }
 
-    void inOrder()
+    void inOrderPrint()
     {
-        LinkedList<std::pair<Node *, bool>> visited;
+        std::vector<Node *> nodes;
+        this->inOrderRetrieve(nodes, this->root);
 
-        visited.insert(std::make_pair(this->root, false));
-        while(visited.size())
+        for(Node *node : nodes)
         {
-            std::pair<Node *, bool> current = visited.remove();
-            if(current.second)
-            {
-                std::cout << current.first->value << " ";
-            }
-            else
-            {
-                if(current.first->right != nullptr)
-                    visited.insert(std::make_pair(current.first->right, false));
-                visited.insert(std::make_pair(current.first, true));
-                if(current.first->left != nullptr)
-                    visited.insert(std::make_pair(current.first->left, false));
-            }
+            std::cout << node->value << " ";
         }
         std::cout << std::endl;
     }
 
-    void preOrder()
+    void preOrderPrint()
     {
-        LinkedList<Node *> visited;
+        std::vector<Node *> nodes;
+        this->preOrderRetrieve(nodes, this->root);
 
-        visited.insert(this->root);
-        while(visited.size())
+        for(Node *node : nodes)
         {
-            Node *current = visited.remove();
-            std::cout << current->value << " ";
-            if(current->right != nullptr)
-                visited.insert(current->right);
-            if(current->left != nullptr)
-                visited.insert(current->left);
+            std::cout << node->value << " ";
         }
+
         std::cout << std::endl;
     }
 
-    void postOrder()
+    void postOrderPrint()
     {
-        LinkedList<std::pair<Node *, bool>> visited;
+        std::vector<Node *> nodes;
+        this->postOrderRetrieve(nodes, this->root);
 
-        visited.insert(std::make_pair(this->root, false));
-        while(visited.size())
+        for(Node *node : nodes)
         {
-            std::pair<Node *, bool> current = visited.remove();
-            if(current.second)
-            {
-                std::cout << current.first->value << " ";
-            }
-            else
-            {
-                visited.insert(std::make_pair(current.first, true));
-                if(current.first->right != nullptr)
-                    visited.insert(std::make_pair(current.first->right, false));
-                if(current.first->left != nullptr)
-                    visited.insert(std::make_pair(current.first->left, false));
-            }
+            std::cout << node->value << " ";
         }
+
         std::cout << std::endl;
     }
 
@@ -174,27 +211,36 @@ template <typename Type> class BinaryTree
     {
         if(this->root == nullptr)
             return 0;
-        LinkedList<std::pair<Node *, size_t>> visited;
-        size_t highest_height = 0;
 
-        visited.insert(std::make_pair(this->root, 1));
+        size_t height = 0;
+
+        LinkedList<Node *> visited;
+        visited.insert(this->root);
 
         while(visited.size())
         {
-            std::pair<Node *, size_t> current = visited.remove();
 
-            if(highest_height < current.second)
-                highest_height = current.second;
+            size_t levelSize = visited.size();
+            height++;
 
-            if(current.first->left != nullptr)
-                visited.insert(std::make_pair(current.first->left, current.second + 1));
-            if(current.first->right != nullptr)
-                visited.insert(std::make_pair(current.first->right, current.second + 1));
+            for(size_t i = 0; i < levelSize; i++)
+            {
+                Node *current = visited.remove();
+
+                if(current->left != nullptr)
+                    visited.insert(current->left);
+                if(current->right != nullptr)
+                    visited.insert(current->right);
+            }
         }
-        return highest_height;
+        return height;
     }
 
-    void balance();
+    void balance()
+    {
+        std::vector<Node *> nodes;
+        this->inOrderRetrieve(nodes, this->root);
+    }
 };
 
 #endif
