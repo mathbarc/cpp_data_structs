@@ -1,13 +1,13 @@
 #ifndef BINARY_TREE_HPP
 #define BINARY_TREE_HPP
 
-#include "double_linked_list.hpp"
 #include "linked_list.hpp"
+#include "queue.hpp"
+#include <cmath>
 #include <iostream>
 #include <stdexcept>
 #include <utility>
 #include <vector>
-
 template <typename Type> class BinaryTree
 {
   private:
@@ -240,6 +240,44 @@ template <typename Type> class BinaryTree
     {
         std::vector<Node *> nodes;
         this->inOrderRetrieve(nodes, this->root);
+
+        Queue<std::pair<int, int>> queue;
+        queue.enqueue(std::make_pair<int, int>(0, nodes.size() - 1));
+        std::pair<int, int> currentInterval = queue.front();
+        int current = (currentInterval.first + currentInterval.second) / 2;
+
+        this->root = nodes[current];
+        Node *support;
+
+        while(queue.size())
+        {
+            currentInterval = queue.dequeue();
+            if(currentInterval.first < currentInterval.second)
+            {
+                current = (currentInterval.first + currentInterval.second) / 2;
+
+                support = nodes[std::floor((currentInterval.first + current) / 2.)];
+                if(nodes[current] != support)
+                    nodes[current]->left = nodes[std::floor((currentInterval.first + current) / 2.)];
+                else
+                    nodes[current]->left = nullptr;
+
+                support = nodes[std::ceil((currentInterval.second + current) / 2.)];
+                if(nodes[current] != support)
+                    nodes[current]->right = nodes[std::ceil((currentInterval.second + current) / 2.)];
+                else
+                    nodes[current]->right = nullptr;
+
+                queue.enqueue(std::make_pair(currentInterval.first, current - 1));
+                queue.enqueue(std::make_pair(current + 1, currentInterval.second));
+            }
+            else if(currentInterval.first == currentInterval.second)
+            {
+                current = currentInterval.first;
+                nodes[current]->left = nullptr;
+                nodes[current]->right = nullptr;
+            }
+        }
     }
 };
 
