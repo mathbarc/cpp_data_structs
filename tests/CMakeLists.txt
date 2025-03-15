@@ -23,3 +23,8 @@ add_executable(binary_tree_test
         ${CMAKE_CURRENT_SOURCE_DIR}/binary_tree_test.cpp)
 # target_link_libraries(binary_tree_test data_structures)
 add_test(NAME binary_tree_test COMMAND binary_tree_test)
+
+add_executable(hash_map_test
+        ${CMAKE_CURRENT_SOURCE_DIR}/hashmap_test.cpp)
+# target_link_libraries(binary_tree_test data_structures)
+add_test(NAME hash_map_test COMMAND hash_map_test)
