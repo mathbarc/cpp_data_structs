@@ -1,0 +1,7 @@
+file(GLOB MEDIA_RETRIEVAL_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp)
+file(GLOB MEDIA_RETRIEVAL_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+add_executable(media_retrival ${MEDIA_RETRIEVAL_HEADERS}
+                              ${MEDIA_RETRIEVAL_SOURCES})
