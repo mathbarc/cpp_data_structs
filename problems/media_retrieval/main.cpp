@@ -19,7 +19,7 @@ int main()
     // elements and handle dynamic data efficiently.
     //
     // Example:
-    // auto dsInstance = DataStructureSubclass<std::vector<uint8_t>*>();
+    auto dsInstance = Queue<std::vector<uint8_t> *>();
 
     // Instantiate the FileReader with the created DataStructure instance,
     // path to the data file, chunk size, and debug flag

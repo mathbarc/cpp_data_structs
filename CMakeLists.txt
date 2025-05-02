@@ -32,8 +32,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   endif()
 endif()
 
+include(CTest)
 add_subdirectory(data_structures)
 add_subdirectory(problems)
 
-include(CTest)
 add_subdirectory(tests)
