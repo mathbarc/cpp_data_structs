@@ -2,7 +2,7 @@
 CXX = g++
 
 # Detect all .cpp files in the directory
-SOURCES = $(wildcard *.cpp)
+SOURCES = main.cpp
 
 # Object files directory
 OBJDIR = obj
