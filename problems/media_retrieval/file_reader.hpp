@@ -113,7 +113,7 @@ template <typename T> class FileReader
 
                 // Push the data to the DataStructure
                 m_dataStructure->insert(data);
-#ifndef DEBUG
+#ifdef DEBUG
                 const unsigned char *bytes = reinterpret_cast<const unsigned char *>(data->data());
                 std::cout << "First 8 bytes as hex: ";
                 for(int i = 0; i < 8; ++i)

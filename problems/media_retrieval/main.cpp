@@ -114,20 +114,20 @@ int main(int argc, char **argv)
     std::cout << identifier << std::endl;
     u_char c;
     c = dataStreamHolder->at(0)->getPayload()->front();
-    std::cout << static_cast<int>(c) << std::endl;
+    std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(c) << std::endl;
     c = dataStreamHolder->at(49)->getPayload()->front();
-    std::cout << static_cast<int>(c) << std::endl;
+    std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(c) << std::endl;
     c = dataStreamHolder->at(99)->getPayload()->front();
-    std::cout << static_cast<int>(c) << std::endl;
+    std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(c) << std::endl;
 
     identifier = "DEF9_0";
     dataStreamHolder = highLevelDataStructureInstance.get(identifier);
     std::cout << identifier << std::endl;
     c = static_cast<char>(dataStreamHolder->at(0)->getPayload()->front());
-    std::cout << static_cast<int>(c) << std::endl;
+    std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(c) << std::endl;
     c = static_cast<char>(dataStreamHolder->at(49)->getPayload()->front());
-    std::cout << static_cast<int>(c) << std::endl;
+    std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(c) << std::endl;
     c = static_cast<char>(dataStreamHolder->at(99)->getPayload()->front());
-    std::cout << static_cast<int>(c) << std::endl;
+    std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(c) << std::endl;
     return 0;
 }
