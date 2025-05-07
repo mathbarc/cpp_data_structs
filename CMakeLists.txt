@@ -12,22 +12,25 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         CACHE STRING "" FORCE)
 
     # find required tools
-    find_program(LCOV lcov REQUIRED)
-    find_program(GENHTML genhtml REQUIRED)
+    find_program(LCOV lcov)
+    find_program(GENHTML genhtml)
 
-    # add coverage target
-    add_custom_target(
-      coverage
-      # gather data
-      COMMAND ${LCOV} --directory ${CMAKE_CURRENT_SOURCE_DIR} --capture
-              --initial --output-file baseline_coverage.info --no-external
-      COMMAND ${LCOV} --directory ${CMAKE_CURRENT_SOURCE_DIR} --capture
-              --output-file coverage.info --no-external
-      COMMAND ${LCOV} --add-tracefile baseline_coverage.info --add-tracefile
-              coverage.info --output-file coverage.info
-      # generate report
-      COMMAND ${GENHTML} --demangle-cpp -o coverage coverage.info
-      WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+    if(DEFINED LCOV AND DEFINED GENHTML)
+      # add coverage target
+      add_custom_target(
+        coverage
+        # gather data
+        COMMAND ${LCOV} --directory ${CMAKE_CURRENT_SOURCE_DIR} --capture
+                --initial --output-file baseline_coverage.info --no-external
+        COMMAND ${LCOV} --directory ${CMAKE_CURRENT_SOURCE_DIR} --capture
+                --output-file coverage.info --no-external
+        COMMAND ${LCOV} --add-tracefile baseline_coverage.info --add-tracefile
+                coverage.info --output-file coverage.info
+        # generate report
+        COMMAND ${GENHTML} --demangle-cpp -o coverage coverage.info
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        DEPENDS test)
+    endif()
   endif()
 endif()
 

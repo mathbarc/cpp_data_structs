@@ -1,9 +1,10 @@
-find_package(
-  OpenCV
-  COMPONENTS core highgui imgcodecs imgproc
-  REQUIRED)
+find_package(OpenCV COMPONENTS core highgui imgcodecs imgproc)
 
-file(GLOB GAME_OF_LIFE_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
-message(${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
-add_executable(game_of_life ${GAME_OF_LIFE_SOURCES})
-target_link_libraries(game_of_life ${OpenCV_LIBRARIES})
+if(${OpenCV_FOUND})
+  file(GLOB GAME_OF_LIFE_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+  message(${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+  add_executable(game_of_life ${GAME_OF_LIFE_SOURCES})
+  target_link_libraries(game_of_life ${OpenCV_LIBRARIES})
+else()
+  message("OpenCV not found, skipping game_of_life")
+endif()
