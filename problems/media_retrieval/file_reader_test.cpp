@@ -1,4 +1,3 @@
-#include "data_interface/av_data_interface.hpp"
 #include "data_structures/queue.hpp"
 #include "file_reader.hpp"
 #include <cassert>
@@ -9,7 +8,7 @@ int main(int argc, char **argv)
         return -1;
     std::string path(argv[1]);
     Queue<std::vector<uint8_t> *> dataQueue;
-    FileReader fr = FileReader(&dataQueue, path, 128, true);
+    FileReader fr = FileReader(&dataQueue, path, 128);
     fr.startReading();
 
     int i = 0;

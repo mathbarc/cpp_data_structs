@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "data_interface/comparable_data_interface.hpp"
+#include "comparable_data_interface.hpp"
 
 enum class StreamType : uint8_t
 {

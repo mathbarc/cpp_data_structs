@@ -5,11 +5,10 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   set(ENABLE_COVERAGE
       ON
       CACHE BOOL "Enable test coverage")
-
   if(ENABLE_COVERAGE)
     # set compiler flags
     set(CMAKE_CXX_FLAGS_DEBUG
-        "-g -O0 -coverage"
+        "-g -O0 -coverage -DDEBUG"
         CACHE STRING "" FORCE)
 
     # find required tools

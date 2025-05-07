@@ -18,9 +18,9 @@ template <typename T> class FileReader
   public:
     // Constructor that initializes the FileReader with a DataStructure instance,
     // and chunk size
-    FileReader(DataStructure<T> *dataStructure, const std::string &filePath, size_t chunkSize = 128, bool debug = false)
-        : m_dataStructure(dataStructure), m_filePath(filePath), m_chunkSize(chunkSize), m_debug(debug),
-          m_terminate(false), m_isRunning(true)
+    FileReader(DataStructure<T> *dataStructure, const std::string &filePath, size_t chunkSize = 128)
+        : m_dataStructure(dataStructure), m_filePath(filePath), m_chunkSize(chunkSize), m_terminate(false),
+          m_isRunning(true)
     {
         // Open the file
         m_file.open(filePath, std::ios::binary);
@@ -75,7 +75,6 @@ template <typename T> class FileReader
     std::ifstream m_file;
     std::string m_filePath;
     size_t m_chunkSize;
-    bool m_debug;
     std::thread m_thread;
     std::atomic<bool> m_terminate;
     std::atomic<bool> m_isRunning; // Atomic flag to indicate whether the reader is busy
@@ -114,27 +113,24 @@ template <typename T> class FileReader
 
                 // Push the data to the DataStructure
                 m_dataStructure->insert(data);
-
-                if(m_debug)
+#ifndef DEBUG
+                const unsigned char *bytes = reinterpret_cast<const unsigned char *>(data->data());
+                std::cout << "First 8 bytes as hex: ";
+                for(int i = 0; i < 8; ++i)
                 {
-                    const unsigned char *bytes = reinterpret_cast<const unsigned char *>(data->data());
-                    std::cout << "First 8 bytes as hex: ";
-                    for(int i = 0; i < 8; ++i)
-                    {
-                        std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(bytes[i]) << " ";
-                    }
-                    std::cout << std::dec << " @ " << totalBytesRead << " - " << bytesLeft
-                              << std::endl; // Switch back to decimal output
+                    std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(bytes[i]) << " ";
                 }
+                std::cout << std::dec << " @ " << totalBytesRead << " - " << bytesLeft
+                          << std::endl; // Switch back to decimal output
+#endif
             }
 
             // Terminate if the end of the file is reached
             if(bytesRead < m_chunkSize)
             {
-                if(m_debug)
-                {
-                    std::cout << "End of file reached. Stopping reading." << std::endl;
-                }
+#ifndef DEBUG
+                std::cout << "End of file reached. Stopping reading." << std::endl;
+#endif
                 break;
             }
             else

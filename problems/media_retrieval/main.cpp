@@ -1,17 +1,23 @@
-#include <iostream>
-
 #include "data_interface/av_data_interface_impl.hpp"
-#include "data_structures/circular_buffer.hpp"
 #include "data_structures/hashmap.hpp"
 #include "data_structures/queue.hpp"
-#include "data_structures/sorted_singly_linked_list.hpp"
-#include "data_structures/stack.hpp"
 #include "file_reader.hpp"
+#include <chrono>
+#include <cstdint>
+#include <iostream>
+#include <sys/types.h>
+#include <vector>
 
-int main()
+using DataStreamHolder = std::vector<AvDataInterface *>;
+
+int main(int argc, char **argv)
 {
+    std::string filePath;
+    if(argc < 2)
+        filePath = "data/tv_packets.bin";
+    else
+        filePath = argv[1];
     // Set the debug flag to true to print out extra information
-    bool debug = false;
 
     // todo: Choose and instantiate an appropriate data structure to hold the raw
     // data from the provided file. You should pick a data structure amongst
@@ -19,11 +25,12 @@ int main()
     // elements and handle dynamic data efficiently.
     //
     // Example:
+
     auto dsInstance = Queue<std::vector<uint8_t> *>();
 
     // Instantiate the FileReader with the created DataStructure instance,
     // path to the data file, chunk size, and debug flag
-    FileReader fr = FileReader(&dsInstance, "data/tv_packets.bin", 128, debug);
+    FileReader fr = FileReader(&dsInstance, filePath, 128);
     fr.startReading();
 
     // todo: Select a suitable data structure to store and retrieve streams by
@@ -37,7 +44,7 @@ int main()
     // selected further down.
     //
     // Example:
-    // HighLevelDS<std::string, DataStreamHolder> highLevelDataStructureInstance;
+    HashMap<std::string, DataStreamHolder> highLevelDataStructureInstance;
 
     // Continue reading as long as the FileReader is running or the dsInstance
     // still has data to parse
@@ -74,7 +81,7 @@ int main()
                 // they are processed.
                 //
                 // Example:
-                // DataStreamHolder* newDsh = new DataStreamHolder();
+                DataStreamHolder *newDsh = new DataStreamHolder();
 
                 // todo: Add the newly created data stream holder instance to the
                 // higher-level data structure using the generated unique identifier
@@ -82,17 +89,15 @@ int main()
                 // can correctly return the appropriate stream data.
                 //
                 // Example:
-                // higherLevelDataStructure.add(streamUniqueIdentifier, newDsh);
-
+                highLevelDataStructureInstance.insert(uniqueIdentifier, newDsh);
                 dataStreamHolderPtr = newDsh;
             }
-            dataStreamHolderPtr->insert(avDataInterface);
+            dataStreamHolderPtr->push_back(avDataInterface);
 
-            if(debug)
-            {
-                std::cout << channelName << " " << static_cast<int>(streamType) << " "
-                          << static_cast<int>(avDataInterface->getSequenceNumber()) << std::endl;
-            }
+#ifdef DEBUG
+            std::cout << channelName << " " << static_cast<int>(streamType) << " "
+                      << static_cast<int>(avDataInterface->getSequenceNumber()) << std::endl;
+#endif // DEBUG
         }
 
         // Allow the file reader to read and push data
@@ -104,5 +109,25 @@ int main()
     // for channel XYZ1, and audio stream packets 1, 50, and 100 for channel DEF9.
     // N.B.: Formatting values in hexadecimal is preferred over decimal.
 
+    std::string identifier = "XYZ1_1";
+    auto dataStreamHolder = highLevelDataStructureInstance.get(identifier);
+    std::cout << identifier << std::endl;
+    u_char c;
+    c = dataStreamHolder->at(0)->getPayload()->front();
+    std::cout << static_cast<int>(c) << std::endl;
+    c = dataStreamHolder->at(49)->getPayload()->front();
+    std::cout << static_cast<int>(c) << std::endl;
+    c = dataStreamHolder->at(99)->getPayload()->front();
+    std::cout << static_cast<int>(c) << std::endl;
+
+    identifier = "DEF9_0";
+    dataStreamHolder = highLevelDataStructureInstance.get(identifier);
+    std::cout << identifier << std::endl;
+    c = static_cast<char>(dataStreamHolder->at(0)->getPayload()->front());
+    std::cout << static_cast<int>(c) << std::endl;
+    c = static_cast<char>(dataStreamHolder->at(49)->getPayload()->front());
+    std::cout << static_cast<int>(c) << std::endl;
+    c = static_cast<char>(dataStreamHolder->at(99)->getPayload()->front());
+    std::cout << static_cast<int>(c) << std::endl;
     return 0;
 }
