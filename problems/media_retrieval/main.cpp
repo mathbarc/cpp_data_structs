@@ -1,15 +1,27 @@
 #include "data_interface/av_data_interface.hpp"
 #include "data_interface/av_data_interface_impl.hpp"
+#include "data_structures/circular_buffer.hpp"
 #include "data_structures/hashmap.hpp"
-#include "data_structures/queue.hpp"
+#include "data_structures/sorted_singly_linked_list.hpp"
 #include "file_reader.hpp"
 #include <chrono>
 #include <cstdint>
 #include <iostream>
+#include <stdexcept>
+#include <string>
 #include <sys/types.h>
 #include <vector>
 
-using DataStreamHolder = std::vector<std::vector<uint8_t> *>;
+using DataStreamHolder = SortedSinglyLinkedList;
+
+std::vector<uint8_t> *getData(DataStreamHolder *streamHolder, size_t pos)
+{
+    Node *node = streamHolder->search(pos);
+    AvDataInterface *dataInterface = static_cast<AvDataInterface *>(node->data);
+    if(dataInterface == nullptr)
+        throw std::runtime_error("Data not found at sequence " + std::to_string(pos));
+    return dataInterface->getPayload();
+}
 
 int main(int argc, char **argv)
 {
@@ -27,7 +39,7 @@ int main(int argc, char **argv)
     //
     // Example:
 
-    auto dsInstance = Queue<std::vector<uint8_t> *>();
+    auto dsInstance = CircularBuffer<std::vector<uint8_t> *>(32);
 
     // Instantiate the FileReader with the created DataStructure instance,
     // path to the data file, chunk size, and debug flag
@@ -93,7 +105,7 @@ int main(int argc, char **argv)
                 highLevelDataStructureInstance.insert(uniqueIdentifier, newDsh);
                 dataStreamHolderPtr = newDsh;
             }
-            dataStreamHolderPtr->push_back(avDataInterface->getPayload());
+            dataStreamHolderPtr->insert(avDataInterface);
 
 #ifdef DEBUG
             std::cout << channelName << " " << static_cast<int>(streamType) << " "
@@ -114,21 +126,21 @@ int main(int argc, char **argv)
     auto dataStreamHolder = highLevelDataStructureInstance.get(identifier);
     std::cout << identifier << std::endl;
     u_char c;
-    c = dataStreamHolder->at(0)->front();
+    c = getData(dataStreamHolder, 1)->front();
     std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(c) << std::endl;
-    c = dataStreamHolder->at(49)->front();
+    c = getData(dataStreamHolder, 50)->front();
     std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(c) << std::endl;
-    c = dataStreamHolder->at(99)->front();
+    c = getData(dataStreamHolder, 100)->front();
     std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(c) << std::endl;
 
     identifier = "DEF9_0";
     dataStreamHolder = highLevelDataStructureInstance.get(identifier);
     std::cout << identifier << std::endl;
-    c = dataStreamHolder->at(0)->front();
+    c = getData(dataStreamHolder, 1)->front();
     std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(c) << std::endl;
-    c = dataStreamHolder->at(49)->front();
+    c = getData(dataStreamHolder, 50)->front();
     std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(c) << std::endl;
-    c = dataStreamHolder->at(99)->front();
+    c = getData(dataStreamHolder, 100)->front();
     std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(c) << std::endl;
     return 0;
 }
