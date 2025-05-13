@@ -17,6 +17,8 @@ using DataStreamHolder = SortedSinglyLinkedList;
 std::vector<uint8_t> *getData(DataStreamHolder *streamHolder, size_t pos)
 {
     Node *node = streamHolder->search(pos);
+    if(node == nullptr)
+        throw std::runtime_error("Node not found at sequence " + std::to_string(pos));
     AvDataInterface *dataInterface = static_cast<AvDataInterface *>(node->data);
     if(dataInterface == nullptr)
         throw std::runtime_error("Data not found at sequence " + std::to_string(pos));
